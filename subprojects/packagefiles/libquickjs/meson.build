@@ -13,16 +13,17 @@ m_dep = cc.find_library('m', required: false)
 has_atomic_8 = cc.has_function('__atomic_fetch_add_8')
 has_libatomic = cc.find_library('atomic', required: false)
 
-if cc.links('''
-	extern __atomic_fetch_add_8();
-	int main(int argc, char** argv) {
-		return(__atomic_fetch_add_8());
-	}''',
-		args: '-latomic',
-		name: 'libatomic')
-	atomic_dep = declare_dependency(link_args: '-latomic')
-else
-	atomic_dep = []
+atomic_dep = []
+if not have_msvc
+	if cc.links('''
+		extern __atomic_fetch_add_8();
+		int main(int argc, char** argv) {
+			return(__atomic_fetch_add_8());
+		}''',
+			args: '-latomic',
+			name: 'libatomic')
+		atomic_dep = declare_dependency(link_args: '-latomic')
+	endif
 endif
 
 headers = [
