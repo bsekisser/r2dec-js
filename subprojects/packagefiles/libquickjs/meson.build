@@ -7,9 +7,20 @@ cc = meson.get_compiler('c')
 have_msvc = cc.get_id() == 'msvc'
 
 threads_dep = dependency('threads')
-atomic_dep = cc.find_library('atomic', required: false)
 dl_dep = cc.find_library('dl', required: false)
 m_dep = cc.find_library('m', required: false)
+
+if cc.links('''
+	extern __atomic_fetch_add_8();
+	int main(int argc, char** argv) {
+		return(__atomic_fetch_add_8());
+	}''',
+		args: '-latomic',
+		name: 'libatomic')
+	atomic_dep = declare_dependency(link_args: '-latomic')
+else
+	atomic_dep = []
+endif
 
 headers = [
   'quickjs.h',
