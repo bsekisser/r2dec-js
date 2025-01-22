@@ -10,6 +10,9 @@ threads_dep = dependency('threads')
 dl_dep = cc.find_library('dl', required: false)
 m_dep = cc.find_library('m', required: false)
 
+has_atomic_8 = cc.has_function('__atomic_fetch_add_8')
+has_libatomic = cc.find_library('atomic', required: false)
+
 if cc.links('''
 	extern __atomic_fetch_add_8();
 	int main(int argc, char** argv) {
