@@ -10,19 +10,19 @@ threads_dep = dependency('threads')
 dl_dep = cc.find_library('dl', required: false)
 m_dep = cc.find_library('m', required: false)
 
-has_atomic_8 = cc.has_function('__atomic_fetch_add_8')
-has_libatomic = cc.find_library('atomic', required: false)
-
-atomic_dep = []
-if not have_msvc
+if meson.get_compiler('c').get_id() == 'gcc'
 	if cc.links('''
-		extern __atomic_fetch_add_8();
-		int main(int argc, char** argv) {
-			return(__atomic_fetch_add_8());
-		}''',
-			args: '-latomic',
-			name: 'libatomic')
-		atomic_dep = declare_dependency(link_args: '-latomic')
+		#include <stdint.h>
+		int main(void) {
+			uint32_t x32 = 0;
+			uint64_t x64 = 0;
+			__atomic_load_n(&x32, __ATOMIC_SEQ_CST);
+			__atomic_load_n(&x64, __ATOMIC_SEQ_CST);
+			return 0;
+		}''', name : 'built-in atomics')
+			atomic_dep = []
+		else
+			atomic_dep = cc.find_library('atomic')
 	endif
 endif
 
