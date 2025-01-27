@@ -10,6 +10,21 @@ threads_dep = dependency('threads')
 dl_dep = cc.find_library('dl', required: false)
 m_dep = cc.find_library('m', required: false)
 
+atomic_dep = dependency('', required: false)
+if meson.get_compiler('c').get_id() == 'gcc'
+	if not cc.links('''
+		#include <stdint.h>
+		int main(void) {
+			uint32_t x32 = 0;
+			uint64_t x64 = 0;
+			__atomic_load_n(&x32, __ATOMIC_SEQ_CST);
+			__atomic_load_n(&x64, __ATOMIC_SEQ_CST);
+			return 0;
+		}''', name : 'built-in atomics')
+	atomic_dep = cc.find_library('atomic')
+	endif
+endif
+
 headers = [
   'quickjs.h',
 ]
@@ -82,7 +97,7 @@ add_project_arguments(
 )
 
 quickjs = static_library('quickjs', sources,
-  dependencies: [threads_dep, dl_dep, m_dep],
+  dependencies: [atomic_dep, threads_dep, dl_dep, m_dep],
   implicit_include_directories: false,
   install: false,
 )

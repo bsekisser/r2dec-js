@@ -23,7 +23,7 @@ jobs:
     - uses: actions/checkout@v4
     - uses: actions/setup-python@v5
       with:
-        python-version: 3.7.x
+        python-version: 3.12.x
     - name: apt dependencies
       run: sudo pip3 install meson ninja
     - name: fetch dependencies via meson
@@ -43,7 +43,7 @@ jobs:
     - uses: actions/checkout@v4
     - uses: actions/setup-python@v5
       with:
-        python-version: 3.7.x
+        python-version: 3.12.x
     - name: apt dependencies
       run: sudo pip3 install meson ninja
     - name: install r2
@@ -118,7 +118,7 @@ jobs:
     - uses: actions/checkout@v4
     - uses: actions/setup-python@v5
       with:
-        python-version: 3.7.x
+        python-version: 3.12.x
     - name: Preparing msvc toolchain
       uses: ilammy/msvc-dev-cmd@v1
       with:
@@ -165,7 +165,7 @@ jobs:
     - uses: actions/checkout@v4
     - uses: actions/setup-python@v5
       with:
-        python-version: 3.7.x
+        python-version: 3.12.x
     - name: Preparing msvc toolchain
       uses: ilammy/msvc-dev-cmd@v1
       with:
