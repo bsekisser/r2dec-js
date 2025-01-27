@@ -10,8 +10,9 @@ threads_dep = dependency('threads')
 dl_dep = cc.find_library('dl', required: false)
 m_dep = cc.find_library('m', required: false)
 
+atomic_dep = dependency('', required: false)
 if meson.get_compiler('c').get_id() == 'gcc'
-	if cc.links('''
+	if not cc.links('''
 		#include <stdint.h>
 		int main(void) {
 			uint32_t x32 = 0;
@@ -20,9 +21,7 @@ if meson.get_compiler('c').get_id() == 'gcc'
 			__atomic_load_n(&x64, __ATOMIC_SEQ_CST);
 			return 0;
 		}''', name : 'built-in atomics')
-			atomic_dep = []
-		else
-			atomic_dep = cc.find_library('atomic')
+	atomic_dep = cc.find_library('atomic')
 	endif
 endif
 
